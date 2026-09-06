@@ -1,0 +1,71 @@
+! Cisco IOS Sample Configuration for NetGuardian Testing
+! Mix of compliant and non-compliant security settings
+version 15.7
+service timestamps debug datetime msec
+service timestamps log datetime msec
+! GOOD: service password-encryption enabled
+service password-encryption
+!
+hostname NETGUARDIAN-RTR-01
+!
+! BAD: No banner motd configured
+!
+! GOOD: SSH version 2 enforced
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+!
+! BAD: Telnet allowed on VTY (should be SSH only)
+line vty 0 4
+ transport input telnet ssh
+ exec-timeout 10 0
+ password cisco123
+ login
+!
+! GOOD: NTP configured with authenticated server
+ntp server 10.1.1.100 key 1
+ntp authenticate
+ntp authentication-key 1 md5 NtpKey123!
+!
+! GOOD: Logging to syslog server
+logging host 10.1.1.50
+logging trap informational
+logging source-interface Loopback0
+!
+! GOOD: AAA new-model enabled
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authorization commands 15 default group tacacs+ local
+aaa accounting exec default start-stop group tacacs+
+!
+tacacs server TACACS-01
+ address ipv4 10.1.1.10
+ key TacacsSecretKey!
+!
+! BAD: Permissive ACL allowing all traffic
+access-list 10 permit ip any any
+access-list 10 permit ip any host 10.1.1.1
+!
+! GOOD: Restrictive management ACL
+access-list 99 permit 10.1.1.0 0.0.0.255
+access-list 99 deny any log
+!
+line vty 0 4
+ access-class 99 in
+!
+! BAD: SNMP with default community strings
+snmp-server community public RO
+snmp-server community private RW
+!
+! GOOD: CDP disabled on external interfaces
+no cdp run
+!
+! BAD: HTTP server enabled without secure settings
+ip http server
+ip http authentication local
+!
+! GOOD: Secure boot configuration
+boot-start-marker
+boot-end-marker
+!
+end
