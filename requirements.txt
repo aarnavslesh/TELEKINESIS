@@ -1,0 +1,7 @@
+setfit
+datasets
+pandas
+fastapi
+uvicorn
+pydantic
+numpy
