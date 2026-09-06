@@ -1,0 +1,73 @@
+text,label
+"ip ssh version 2",SSH Config
+"crypto key generate rsa modulus 2048",SSH Config
+"ip ssh time-out 60",SSH Config
+"ip ssh authentication-retries 3",SSH Config
+"line vty 0 4 transport input ssh",SSH Config
+"transport input ssh telnet",SSH Config
+"ip ssh source-interface vlan 10",SSH Config
+"ip ssh ver 2",SSH Config
+"security passwords min-length 10",Password Policy
+"service password-encryption",Password Policy
+"enable secret Str0ngSecret!",Password Policy
+"username admin secret 9 $9$abc123",Password Policy
+"password encryption aes",Password Policy
+"login block-for 120 attempts 3 within 60",Password Policy
+"enable password cisco",Password Policy
+"sec pass min-len 8",Password Policy
+"access-list 10 permit 192.168.1.0 0.0.0.255",Access Control
+"ip access-list extended BLOCK_TELNET",Access Control
+"permit tcp any any eq 22",Access Control
+"deny ip any any log",Access Control
+"ip access-group 101 in",Access Control
+"ipv6 traffic-filter V6-IN in",Access Control
+"access-class 23 in",Access Control
+"acces-list 101 deny tcp any any eq 23",Access Control
+"logging host 10.0.0.50",Logging
+"logging trap warnings",Logging
+"service timestamps log datetime msec",Logging
+"logging buffered 16384 informational",Logging
+"no logging console",Logging
+"logg trap informational",Logging
+"logging source-interface Loopback0",Logging
+"archive log config logging enable",Logging
+"banner motd ^CUnauthorized access prohibited^C",Banner
+"banner login #Authorized users only#",Banner
+"banner exec $Device monitored$",Banner
+"no banner motd",Banner
+"banner incoming %Maintenance window active%",Banner
+"bann motd ^CKeep out^C",Banner
+"banner motd @Legal notice@",Banner
+"banner login ^CWarning: monitored system^C",Banner
+"interface GigabitEthernet0/1",Interface
+"int gi0/1",Interface
+"description Uplink to core",Interface
+"shutdown",Interface
+"no shut",Interface
+"switchport mode trunk",Interface
+"duplex full",Interface
+"speed 1000",Interface
+"ntp server 192.0.2.10 prefer",NTP
+"ntp authenticate",NTP
+"ntp authentication-key 1 md5 cisco123 7",NTP
+"ntp trusted-key 1",NTP
+"ntp source Loopback0",NTP
+"sntp server 10.10.10.10",NTP
+"ntp update-calendar",NTP
+"ntp serv 172.16.1.5",NTP
+"aaa new-model",AAA
+"aaa authentication login default local",AAA
+"aaa authorization exec default local",AAA
+"aaa accounting commands 15 default start-stop group tacacs+",AAA
+"tacacs-server host 10.0.0.20 key 7 12345",AAA
+"radius-server host 10.0.0.30 auth-port 1812 acct-port 1813 key radkey",AAA
+"aaa authen login VTY group radius local",AAA
+"aaa session-id common",AAA
+"vlan 10",VLAN
+"name USERS",VLAN
+"switchport access vlan 20",VLAN
+"vlan database",VLAN
+"vtp mode transparent",VLAN
+"spanning-tree vlan 10 priority 4096",VLAN
+"vlan 100,200",VLAN
+"sw acc vlan 30",VLAN
