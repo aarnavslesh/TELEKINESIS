@@ -335,7 +335,16 @@ async def upload_config(file: UploadFile = File(...)) -> UploadResponse:
 
     # Read file content
     content = await file.read()
-    config_text = content.decode("utf-8", errors="replace")
+
+    # Validate: non-empty file
+    if not content:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty")
+
+    # Validate: UTF-8 decodable (strict, no replacement)
+    try:
+        config_text = content.decode("utf-8")
+    except UnicodeDecodeError:
+        raise HTTPException(status_code=400, detail="Uploaded file is not valid UTF-8 text")
 
     # Parse the config (TextFSM + regex)
     parsed = parse_cisco_ios(config_text)
