@@ -8,24 +8,29 @@ service password-encryption
 !
 hostname NETGUARDIAN-RTR-01
 !
+! GOOD: enable secret is used (no plaintext enable password)
+enable secret 5 $1$abcd$efgh
+!
 ! BAD: No banner motd configured
 !
 ! GOOD: SSH version 2 enforced
 ip ssh version 2
+! GOOD: SSH idle timeout capped at 60 seconds
 ip ssh time-out 60
 ip ssh authentication-retries 3
 !
 ! BAD: Telnet allowed on VTY (should be SSH only)
 line vty 0 4
  transport input telnet ssh
- exec-timeout 10 0
+ exec-timeout 5 0
  password cisco123
  login
 !
-! GOOD: NTP configured with authenticated server
-ntp server 10.1.1.100 key 1
-ntp authenticate
-ntp authentication-key 1 md5 NtpKey123!
+! GOOD: IP source routing disabled
+no ip source-route
+!
+! BAD: NTP server configured but WITHOUT authentication
+ntp server 10.0.0.5
 !
 ! GOOD: Logging to syslog server
 logging host 10.1.1.50
@@ -37,6 +42,9 @@ aaa new-model
 aaa authentication login default group tacacs+ local
 aaa authorization commands 15 default group tacacs+ local
 aaa accounting exec default start-stop group tacacs+
+!
+! GOOD: Login brute-force blocking enabled
+login block-for 120 attempts 3 within 60
 !
 tacacs server TACACS-01
  address ipv4 10.1.1.10

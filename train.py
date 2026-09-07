@@ -143,8 +143,8 @@ def main() -> None:
     metrics = trainer.evaluate()
     print(f"Evaluation metrics: {metrics}")
 
-    # save_pretrained writes all files needed by app.py to load the classifier
-    # later without retraining.
+    # save_pretrained writes all files needed to load the classifier later
+    # without retraining.
     MODEL_OUTPUT_DIR.mkdir(exist_ok=True)
     trainer.model.save_pretrained(str(MODEL_OUTPUT_DIR))
     print(f"Saved fine-tuned model to: {MODEL_OUTPUT_DIR.resolve()}")

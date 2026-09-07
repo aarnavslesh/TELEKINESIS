@@ -4,3 +4,6 @@ python-multipart==0.0.9
 textfsm==1.1.2
 pydantic==2.9.2
 pydantic-settings==2.5.2
+setfit==1.2.0
+pandas==3.0.3
+datasets==4.8.5

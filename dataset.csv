@@ -1,73 +1,180 @@
-text,label
-"ip ssh version 2",SSH Config
-"crypto key generate rsa modulus 2048",SSH Config
-"ip ssh time-out 60",SSH Config
-"ip ssh authentication-retries 3",SSH Config
-"line vty 0 4 transport input ssh",SSH Config
-"transport input ssh telnet",SSH Config
-"ip ssh source-interface vlan 10",SSH Config
-"ip ssh ver 2",SSH Config
-"security passwords min-length 10",Password Policy
-"service password-encryption",Password Policy
-"enable secret Str0ngSecret!",Password Policy
-"username admin secret 9 $9$abc123",Password Policy
-"password encryption aes",Password Policy
-"login block-for 120 attempts 3 within 60",Password Policy
-"enable password cisco",Password Policy
-"sec pass min-len 8",Password Policy
-"access-list 10 permit 192.168.1.0 0.0.0.255",Access Control
-"ip access-list extended BLOCK_TELNET",Access Control
-"permit tcp any any eq 22",Access Control
-"deny ip any any log",Access Control
-"ip access-group 101 in",Access Control
-"ipv6 traffic-filter V6-IN in",Access Control
-"access-class 23 in",Access Control
-"acces-list 101 deny tcp any any eq 23",Access Control
-"logging host 10.0.0.50",Logging
-"logging trap warnings",Logging
-"service timestamps log datetime msec",Logging
-"logging buffered 16384 informational",Logging
-"no logging console",Logging
-"logg trap informational",Logging
-"logging source-interface Loopback0",Logging
-"archive log config logging enable",Logging
-"banner motd ^CUnauthorized access prohibited^C",Banner
-"banner login #Authorized users only#",Banner
-"banner exec $Device monitored$",Banner
-"no banner motd",Banner
-"banner incoming %Maintenance window active%",Banner
-"bann motd ^CKeep out^C",Banner
-"banner motd @Legal notice@",Banner
-"banner login ^CWarning: monitored system^C",Banner
-"interface GigabitEthernet0/1",Interface
-"int gi0/1",Interface
-"description Uplink to core",Interface
-"shutdown",Interface
-"no shut",Interface
-"switchport mode trunk",Interface
-"duplex full",Interface
-"speed 1000",Interface
-"ntp server 192.0.2.10 prefer",NTP
-"ntp authenticate",NTP
-"ntp authentication-key 1 md5 cisco123 7",NTP
-"ntp trusted-key 1",NTP
-"ntp source Loopback0",NTP
-"sntp server 10.10.10.10",NTP
-"ntp update-calendar",NTP
-"ntp serv 172.16.1.5",NTP
-"aaa new-model",AAA
-"aaa authentication login default local",AAA
-"aaa authorization exec default local",AAA
-"aaa accounting commands 15 default start-stop group tacacs+",AAA
-"tacacs-server host 10.0.0.20 key 7 12345",AAA
-"radius-server host 10.0.0.30 auth-port 1812 acct-port 1813 key radkey",AAA
-"aaa authen login VTY group radius local",AAA
-"aaa session-id common",AAA
-"vlan 10",VLAN
-"name USERS",VLAN
-"switchport access vlan 20",VLAN
-"vlan database",VLAN
-"vtp mode transparent",VLAN
-"spanning-tree vlan 10 priority 4096",VLAN
-"vlan 100,200",VLAN
-"sw acc vlan 30",VLAN
+logging host 10.0.0.1,Logging
+logging trap debugging,Logging
+logging console,Logging
+logging buffered 16384 informational,Logging
+service timestamps log datetime msec,Logging
+archive log config logging enable,Logging
+logging source-interface Loopback0,Logging
+logging trap warnings,Logging
+logging facility local7,Logging
+logging monitor debugging,Logging
+logg host 10.0.0.1,Logging
+logg trap dbg,Logging
+logg cons,Logging
+logg buff 16384 info,Logging
+srvc time log date msec,Logging
+logg src-int lo0,Logging
+loging host 10.0.0.1,Logging
+logg traph dbg,Logging
+logging conole,Logging
+log buff 16384 inf,Logging
+ip ssh version 2,SSH Config
+ip ssh time-out 60,SSH Config
+ip ssh authentication-retries 3,SSH Config
+transport input ssh telnet,SSH Config
+ip ssh maxstartups 10,SSH Config
+crypto key generate rsa modulus 2048,SSH Config
+ip ssh rsa keypair-name SSH-KEYS,SSH Config
+ip ssh dh min size 2048,SSH Config
+ip ssh server algorithm encryption aes128-ctr,SSH Config
+ip ssh client algorithm mac hmac-sha2-256,SSH Config
+ip sh ver 2,SSH Config
+ip ssh time 60,SSH Config
+ip ssh auth 3,SSH Config
+trans inp ssh,SSH Config
+cry key gen rsa mod 2048,SSH Config
+ip sh dh min 2048,SSH Config
+ip shh version 2,SSH Config
+transport inpt ssh,SSH Config
+ip sshh time-out 60,SSH Config
+crytpo key gen rsa,SSH Config
+access-list 101 permit tcp any any eq 22c,Access Control
+access-list 101 deny ip any any,Access Control
+ipv6 access-list BLOCK_HTTP,Access Control
+permit tcp 192.168.1.0 0.0.0.255 host 10.0.0.1 eq 80,Access Control
+deny udp any any eq 53,Access Control
+mac access-list extended MAC_FILTER,Access Control
+access-list 10 permit 10.1.1.0 0.0.0.255,Access Control
+permit icmp any any echo,Access Control
+deny ipv6 any any,Access Control
+remark Block Telnet traffic,Access Control
+acc-list 101 perm tcp any any eq 22,Access Control
+acc-list 101 den ip any any,Access Control
+perm tcp 192.168.1.0 0.0.0.255 h 10.0.0.1 eq 80,Access Control
+den udp any any eq 53,Access Control
+acc-list 10 perm 10.1.1.0 0.0.0.255,Access Control
+rem Block Telnet traffic,Access Control
+aces-list 101 permit tcp any any,Access Control
+acces-list 10 permit 10.1.1.0,Access Control
+permt tcp any any eq 22,Access Control
+dney ip any any,Access Control
+banner motd ^C Unauthorized Access Prohibited ^C,Banner
+banner login # Authorized Personnel Only #,Banner
+banner exec $ Disconnect immediately if not authorized $,Banner
+banner incoming % Welcome to the internal router %,Banner
+banner motd @ ALL ACTIONS MONITORED @,Banner
+banner login * System is restricted *,Banner
+banner exec ! Maintenance window in progress !,Banner
+banner motd & Authorized users only &,Banner
+banner login ^ Keep out ^,Banner
+banner exec ~ Use of this system is logged ~,Banner
+ban motd ^C Unauthorized Access ^C,Banner
+ban logi # Authorized Personnel #,Banner
+ban exec $ Disconnect immediately $,Banner
+ban inc % Welcome %,Banner
+ban motd @ MONITORED @,Banner
+ban logi * Restricted *,Banner
+baner motd ^C Unauthorized ^C,Banner
+bannr login # Keep out #,Banner
+banner execc $ Disconnect $,Banner
+baner inc % Welcome %,Banner
+interface GigabitEthernet0/1,Interface
+description UPLINK TO CORE,Interface
+ip address 10.1.1.1 255.255.255.0,Interface
+shutdown,Interface
+no shutdown,Interface
+speed 1000,Interface
+duplex full,Interface
+switchport mode access,Interface
+switchport mode trunk,Interface
+ipv6 address 2001:db8::1/64,Interface
+int gi0/1,Interface
+desc UPLINK TO CORE,Interface
+ip add 10.1.1.1 255.255.255.0,Interface
+shut,Interface
+no shut,Interface
+sw mo acc,Interface
+interfac GigabitEthernet0/1,Interface
+ip adress 10.1.1.1 255.255.255.0,Interface
+swtchport mode trunk,Interface
+no shudown,Interface
+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0,Password Policy
+enable password cisco,Password Policy
+service password-encryption,Password Policy
+security passwords min-length 10,Password Policy
+username admin privilege 15 secret 9 $9$ab12,Password Policy
+password encryption aes,Password Policy
+login block-for 120 attempts 3 within 60,Password Policy
+login delay 10,Password Policy
+enable algorithm-type scrypt secret cisco,Password Policy
+username cisco password 0 cisco,Password Policy
+en sec 5 $1$mERr$hx5,Password Policy
+en pass cisco,Password Policy
+srv pass-enc,Password Policy
+sec pass min-len 10,Password Policy
+usr admin priv 15 sec 9 $9$ab12,Password Policy
+logi block-for 120 att 3 with 60,Password Policy
+enabe secret 5 $1$mERr,Password Policy
+servce password-encryption,Password Policy
+securty passwords min-len 10,Password Policy
+enab pass cisco,Password Policy
+ntp server 192.168.1.10,NTP
+ntp master 3,NTP
+ntp authenticate,NTP
+ntp authentication-key 1 md5 mysecret,NTP
+ntp trusted-key 1,NTP
+ntp source Loopback0,NTP
+ntp update-calendar,NTP
+ntp peer 10.1.1.1,NTP
+ntp clock-period 17179869,NTP
+ntp max-associations 10,NTP
+ntp serv 192.168.1.10,NTP
+ntp auth,NTP
+ntp auth-key 1 md5 mysecret,NTP
+ntp trus 1,NTP
+ntp src lo0,NTP
+ntp up,NTP
+ntp sever 192.168.1.10,NTP
+ntp authenicate,NTP
+ntp srouce Loopback0,NTP
+ntp mster 3,NTP
+aaa new-model,AAA
+aaa authentication login default group radius local,AAA
+aaa authorization exec default group tacacs+ local,AAA
+aaa accounting exec default start-stop group radius,AAA
+radius-server host 10.1.1.10 auth-port 1812 acct-port 1813,AAA
+tacacs-server host 10.2.2.2,AAA
+aaa session-id common,AAA
+aaa accounting network default start-stop group tacacs+,AAA
+aaa authentication dot1x default group radius,AAA
+aaa group server radius MY_RADIUS,AAA
+aaa new-mod,AAA
+aaa auth login def group rad loc,AAA
+aaa author exec def group tac loc,AAA
+aaa acc exec def start-stop group rad,AAA
+rad-serv host 10.1.1.10,AAA
+tac-serv host 10.2.2.2,AAA
+aa new-model,AAA
+aaa authenication login default,AAA
+aaa acounting exec default,AAA
+radius-sever host 10.1.1.10,AAA
+vlan 10,VLAN
+name SALES_VLAN,VLAN
+vlan 20,VLAN
+name ENGINEERING,VLAN
+vlan 99,VLAN
+name MANAGEMENT,VLAN
+vtp mode transparent,VLAN
+vtp domain CORPNET,VLAN
+vtp version 2,VLAN
+vlan dot1q tag native,VLAN
+vl 10,VLAN
+na SALES_VLAN,VLAN
+vl 20,VLAN
+vtp mo tran,VLAN
+vtp dom CORPNET,VLAN
+vl dot1q tag nat,VLAN
+valn 10,VLAN
+nam MANAGEMENT,VLAN
+vtp mod transparent,VLAN
+nme ENGINEERING,VLAN

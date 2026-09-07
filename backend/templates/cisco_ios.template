@@ -1,0 +1,43 @@
+Value hostname (\S+)
+Value ssh_version (\S+)
+Value ssh_timeout (\d+)
+Value service_password_encryption (service password-encryption)
+Value banner_motd (.+)
+Value vty_transport_input (.+)
+Value List exec_timeout (\d+ \d+)
+Value vty_exec_timeout (\d+ \d+)
+Value ntp_configured (ntp \S+ \S+)
+Value ntp_auth_enabled (ntp authenticate\b)
+Value logging_enabled (logging host)
+Value aaa_enabled (aaa new-model)
+Value acl_permissive (access-list \d+ permit ip any any)
+Value http_server_enabled (ip http server)
+Value cdp_enabled (no cdp run|cdp run)
+Value List snmp_communities (\S+)
+Value source_route_disabled (no ip source-route)
+Value List vty_acl (\S+)
+Value login_block (login block-for .+)
+Value enable_secret_used (enable secret .+)
+
+Start
+  ^hostname\s+${hostname}
+  ^ip ssh version\s+${ssh_version}
+  ^ip ssh time-out\s+${ssh_timeout}
+  ^${service_password_encryption}
+  ^banner motd\s+${banner_motd}
+  ^\s*transport input\s+${vty_transport_input}
+  ^\s*exec-timeout\s+${exec_timeout}
+  ^\s*exec-timeout\s+${vty_exec_timeout}
+  ^${ntp_auth_enabled}
+  ^${ntp_configured}
+  ^${logging_enabled}
+  ^${aaa_enabled}
+  ^${acl_permissive}
+  ^${http_server_enabled}
+  ^${cdp_enabled}
+  ^snmp-server community\s+${snmp_communities}
+  ^${source_route_disabled}
+  ^\s*access-class\s+${vty_acl}\s+in\b
+  ^${login_block}
+  ^${enable_secret_used}
+  ^.* -> Start
