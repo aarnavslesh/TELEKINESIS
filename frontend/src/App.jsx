@@ -7,7 +7,6 @@ import AuditHistoryView from './components/history/AuditHistoryView';
 import { sampleHistorySnapshots } from './data/sampleHistory';
 import { sampleReviewQueue } from './data/sampleReviewQueue';
 import {
-  sampleAuditResults,
   computeAuditStats,
 } from './data/sampleAuditData';
 import { exportDefensePdfReport, downloadDefensePdfReport } from './utils/pdfExport';
@@ -34,7 +33,7 @@ export default function App() {
   }, []);
 
   const getActiveAuditData = useCallback(() => {
-    const data = activeSnapshot || auditResultsRef || sampleAuditResults;
+    const data = activeSnapshot || auditResultsRef || [];
     const stats = computeAuditStats(Array.isArray(data) ? data : data.results || []);
     return activeSnapshot || {
       fileName: 'active-audit.cfg',
@@ -55,11 +54,21 @@ export default function App() {
   }, [activeSnapshot, auditResultsRef]);
 
   const handleExportPDF = useCallback(() => {
-    exportDefensePdfReport(getActiveAuditData());
+    const data = getActiveAuditData();
+    if (!data.results || data.results.length === 0) {
+      alert('Run an audit first — there is nothing to export yet.');
+      return;
+    }
+    exportDefensePdfReport(data);
   }, [getActiveAuditData]);
 
   const handleDownloadPDF = useCallback(async () => {
-    await downloadDefensePdfReport(getActiveAuditData());
+    const data = getActiveAuditData();
+    if (!data.results || data.results.length === 0) {
+      alert('Run an audit first — there is nothing to export yet.');
+      return;
+    }
+    await downloadDefensePdfReport(data);
   }, [getActiveAuditData]);
 
   const activeNav = currentView;
