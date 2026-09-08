@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   Brain,
   AlertTriangle,
@@ -15,6 +15,11 @@ import {
 import LiveTestSandbox from './LiveTestSandbox';
 import ModelStatusInfoCard from './ModelStatusInfoCard';
 import { sampleReviewQueue } from '../../data/sampleReviewQueue';
+import {
+  fetchPendingReviews,
+  fetchAuditHistory,
+  resolvePendingReview,
+} from '../../services/api';
 import { CATEGORIES } from '../../services/api';
 
 /* ── Inline Reassign Dropdown ── */
@@ -82,29 +87,72 @@ export default function ActiveLearningView({
   queue: externalQueue,
   onQueueChange,
 }) {
-  const [internalQueue, setInternalQueue] = useState(sampleReviewQueue);
+  const [internalQueue, setInternalQueue] = useState([]);
+  const [loadError, setLoadError] = useState(null);
   const queue = externalQueue || internalQueue;
   const setQueue = onQueueChange || setInternalQueue;
   const [copiedId, setCopiedId] = useState(null);
 
+  // Load REAL pending reviews from the backend on mount
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [reviews, uploads] = await Promise.all([
+          fetchPendingReviews(),
+          fetchAuditHistory().catch(() => []),
+        ]);
+        if (cancelled) return;
+        const nameById = {};
+        for (const u of uploads) nameById[u.id] = u.filename;
+        const mapped = reviews.map((r) => ({
+          id: r.id,
+          rawCommand: r.command,
+          source: nameById[r.upload_id] || 'uploaded config',
+          predicted: r.predicted_label,
+          confidence: typeof r.confidence === 'number' ? r.confidence : 0,
+          status: 'pending',
+        }));
+        setQueue(mapped);
+        setLoadError(null);
+      } catch (err) {
+        if (!cancelled) {
+          setLoadError('Could not load pending reviews — is the backend running on :8000?');
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [setQueue]);
+
   // ── Actions ──
   const handleApprove = useCallback((id) => {
+    const snapshot = queue;
     setQueue((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, status: 'approved', reviewed: true } : item,
       ),
     );
-  }, [setQueue]);
+    resolvePendingReview(id, 'approve').catch(() => {
+      setQueue(snapshot);
+      alert('Approve failed — is the backend running?');
+    });
+  }, [setQueue, queue]);
 
   const handleReject = useCallback((id) => {
+    const snapshot = queue;
     setQueue((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, status: 'rejected', reviewed: true } : item,
       ),
     );
-  }, [setQueue]);
+    resolvePendingReview(id, 'reject').catch(() => {
+      setQueue(snapshot);
+      alert('Reject failed — is the backend running?');
+    });
+  }, [setQueue, queue]);
 
   const handleReassign = useCallback((id, newCategory) => {
+    const snapshot = queue;
     setQueue((prev) =>
       prev.map((item) =>
         item.id === id
@@ -112,17 +160,27 @@ export default function ActiveLearningView({
           : item,
       ),
     );
-  }, [setQueue]);
+    resolvePendingReview(id, 'relabel', newCategory).catch(() => {
+      setQueue(snapshot);
+      alert('Relabel failed — is the backend running?');
+    });
+  }, [setQueue, queue]);
 
   const handleApproveAllAbove80 = useCallback(() => {
+    const targets = queue.filter((q) => q.status === 'pending');
+    if (targets.length === 0) return;
     setQueue((prev) =>
       prev.map((item) =>
-        item.status === 'pending' && item.confidence >= 0.8
-          ? { ...item, status: 'approved', reviewed: true }
-          : item,
+        item.status === 'pending' ? { ...item, status: 'approved', reviewed: true } : item,
       ),
     );
-  }, [setQueue]);
+    Promise.allSettled(
+      targets.map((t) => resolvePendingReview(t.id, 'approve')),
+    ).then((results) => {
+      const failed = results.filter((r) => r.status === 'rejected').length;
+      if (failed > 0) alert(`${failed} approve(s) failed — reload the page to see true state.`);
+    });
+  }, [setQueue, queue]);
 
   const handleCopy = useCallback((id, text) => {
     if (navigator.clipboard) {
@@ -161,7 +219,7 @@ export default function ActiveLearningView({
               Active Learning Review Queue
             </h1>
             <p className="m-0 text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-              Cisco IOS commands flagged below the 85% confidence cutoff for human auditor verification.
+              Cisco IOS commands flagged below the 65% confidence cutoff for human auditor verification.
             </p>
           </div>
         </div>
@@ -170,6 +228,12 @@ export default function ActiveLearningView({
           Human-in-the-Loop Mode
         </span>
       </div>
+
+      {loadError && (
+        <div className="insight-card-white p-3 text-xs font-semibold text-rose-600 dark:text-rose-400 border-l-4 border-l-rose-500 shadow-xs">
+          {loadError}
+        </div>
+      )}
 
       {/* ── Top Metrics Ribbon (Obsidian Glass Box) ── */}
       <div
@@ -241,7 +305,7 @@ export default function ActiveLearningView({
             </div>
             <div className="flex items-baseline gap-1.5">
               <span className="text-2xl font-extrabold tracking-tight text-white font-mono">
-                &lt; 85%
+                &lt; 65%
               </span>
             </div>
             <p className="text-[11px] text-neutral-400 mt-1.5 m-0">
@@ -300,7 +364,7 @@ export default function ActiveLearningView({
                   onClick={handleApproveAllAbove80}
                   className="text-xs font-semibold text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors cursor-pointer"
                 >
-                  Approve All &gt;80%
+                  Approve All
                 </button>
               )}
               <span className="text-xs text-neutral-400 dark:text-neutral-500 font-mono">

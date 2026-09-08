@@ -42,41 +42,6 @@ function StatusPill({ status }) {
   );
 }
 
-function MinimalToggle({ checked, onChange, label }) {
-  return (
-    <label
-      className="flex items-center gap-2 cursor-pointer select-none"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={(e) => {
-          e.stopPropagation();
-          onChange(!checked);
-        }}
-        className={`relative inline-flex h-4 w-7 shrink-0 cursor-pointer rounded-full border border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-          checked
-            ? 'bg-[#BAF91A]'
-            : 'bg-slate-200 dark:bg-neutral-800'
-        }`}
-      >
-        <span
-          className={`pointer-events-none inline-block h-3 w-3 transform rounded-full shadow-xs ring-0 transition duration-200 ease-in-out mt-[1px] ${
-            checked ? 'translate-x-3.5 bg-[#101312]' : 'translate-x-0.5 bg-white dark:bg-neutral-400'
-          }`}
-        />
-      </button>
-      {label && (
-        <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400 whitespace-nowrap">
-          {label}
-        </span>
-      )}
-    </label>
-  );
-}
-
 function ExpandedDrawer({ rule }) {
   const [copiedFix, setCopiedFix] = useState(false);
   const [copiedRollback, setCopiedRollback] = useState(false);
@@ -153,14 +118,9 @@ function ExpandedDrawer({ rule }) {
 
 export default function AuditTable({ results, onNavigateActiveLearning }) {
   const [expandedId, setExpandedId] = useState(null);
-  const [autoRemediate, setAutoRemediate] = useState({});
 
   const toggleRow = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
-  };
-
-  const toggleAuto = (id, val) => {
-    setAutoRemediate((prev) => ({ ...prev, [id]: val }));
   };
 
   if (!results || results.length === 0) return null;
@@ -171,8 +131,8 @@ export default function AuditTable({ results, onNavigateActiveLearning }) {
       className="insight-card-white overflow-hidden shadow-xs animate-slide-up"
     >
       {/* Table Header */}
-      <div className="grid grid-cols-[76px_minmax(160px,1.3fr)_minmax(140px,1fr)_minmax(160px,1.4fr)_76px_28px] items-center gap-3 px-5 py-3 border-b border-slate-200/80 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02]">
-        {['Status', 'Cisco CLI Code', 'Benchmark Rule', 'Remediation', 'Auto-Fix', ''].map(
+      <div className="grid grid-cols-[76px_minmax(160px,1.3fr)_minmax(140px,1fr)_minmax(160px,1.4fr)_28px] items-center gap-3 px-5 py-3 border-b border-slate-200/80 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02]">
+        {['Status', 'Cisco CLI Code', 'Benchmark Rule', 'Remediation', ''].map(
           (col, i) => (
             <span
               key={i}
@@ -188,16 +148,12 @@ export default function AuditTable({ results, onNavigateActiveLearning }) {
       <div className="divide-y divide-neutral-100 dark:divide-neutral-800/60">
         {results.map((rule) => {
           const isOpen = expandedId === rule.id;
-          const isAiFallbackRule =
-            rule.isAiFallback ||
-            rule.cliCode?.includes('logg trap') ||
-            (rule.confidence && rule.confidence < 0.85);
 
           return (
             <div key={rule.id} id={`audit-row-${rule.id}`}>
               <div
                 onClick={() => toggleRow(rule.id)}
-                className={`grid grid-cols-[76px_minmax(160px,1.3fr)_minmax(140px,1fr)_minmax(160px,1.4fr)_76px_28px] items-center gap-3 px-5 py-3.5 cursor-pointer transition-colors ${
+                className={`grid grid-cols-[76px_minmax(160px,1.3fr)_minmax(140px,1fr)_minmax(160px,1.4fr)_28px] items-center gap-3 px-5 py-3.5 cursor-pointer transition-colors ${
                   isOpen
                     ? 'bg-slate-100/70 dark:bg-white/[0.05]'
                     : 'hover:bg-slate-50/70 dark:hover:bg-white/[0.02]'
@@ -213,23 +169,6 @@ export default function AuditTable({ results, onNavigateActiveLearning }) {
                   <code className="cli-code-badge">
                     {rule.command}
                   </code>
-
-                  {isAiFallbackRule && (
-                    <button
-                      id={`ai-fallback-badge-${rule.id}`}
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onNavigateActiveLearning?.(rule.activeLearningTargetId || 'review-001');
-                      }}
-                      className="mt-1.5 flex items-center gap-1 text-[10px] px-2 py-0.5 font-semibold rounded-full bg-[#EDE8FF] dark:bg-[#876DFF]/20 text-[#876DFF] dark:text-[#A38FFF] border border-[#876DFF]/30 hover:border-[#876DFF] transition-colors cursor-pointer"
-                      title="Inspect in Active Learning Queue"
-                    >
-                      <Brain size={10} strokeWidth={2} />
-                      <span>SetFit: {(rule.confidence ? rule.confidence * 100 : 82.4).toFixed(0)}%</span>
-                      <span className="ml-0.5">Queue →</span>
-                    </button>
-                  )}
                 </div>
 
                 {/* Rule */}
@@ -247,15 +186,6 @@ export default function AuditTable({ results, onNavigateActiveLearning }) {
                   <p className="m-0 text-xs text-neutral-500 dark:text-neutral-400 leading-snug line-clamp-2">
                     {rule.remediation}
                   </p>
-                </div>
-
-                {/* Auto-Fix Toggle */}
-                <div onClick={(e) => e.stopPropagation()}>
-                  <MinimalToggle
-                    checked={!!autoRemediate[rule.id]}
-                    onChange={(val) => toggleAuto(rule.id, val)}
-                    label=""
-                  />
                 </div>
 
                 {/* Expand Chevron */}

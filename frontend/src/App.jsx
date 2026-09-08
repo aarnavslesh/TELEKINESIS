@@ -15,7 +15,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' | 'active-learning' | 'history'
   const [activeSnapshot, setActiveSnapshot] = useState(null);
   const [highlightedReviewId, setHighlightedReviewId] = useState(null);
-  const [reviewQueue, setReviewQueue] = useState(sampleReviewQueue);
+  const [reviewQueue, setReviewQueue] = useState([]);
 
   // Hold audit results reference for PDF export from header
   const [auditResultsRef, setAuditResultsRef] = useState(null);

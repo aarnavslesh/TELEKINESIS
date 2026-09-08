@@ -64,10 +64,10 @@ export async function predictCommand(command) {
   const startTime = performance.now();
 
   try {
-    const response = await fetch(`${BACKEND_URL}/predict`, {
+    const response = await fetch(`${BACKEND_URL}/classify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ command }),
+      body: JSON.stringify([command]),
       signal: AbortSignal.timeout(5000),
     });
 
@@ -76,11 +76,15 @@ export async function predictCommand(command) {
     }
 
     const data = await response.json();
+    const first = Array.isArray(data) ? data[0] : null;
+    if (!first) {
+      throw new Error('Empty classification response');
+    }
     const latencyMs = Math.round(performance.now() - startTime);
 
     return {
-      category: data.category,
-      confidence: data.confidence,
+      category: first.predicted_label,
+      confidence: first.confidence,
       latencyMs,
       isLive: true,
     };
@@ -139,6 +143,35 @@ export async function checkBackendHealth() {
   } catch {
     return false;
   }
+}
+
+/**
+ * Fetch all pending AI-classification reviews from the backend.
+ */
+export async function fetchPendingReviews() {
+  const response = await fetch(`${BACKEND_URL}/pending-reviews`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch pending reviews');
+  }
+  return await response.json();
+}
+
+/**
+ * Resolve a pending review: action = 'approve' | 'reject' | 'relabel'.
+ */
+export async function resolvePendingReview(id, action, newLabel = null) {
+  const body = { action };
+  if (action === 'relabel' && newLabel) body.new_label = newLabel;
+  const response = await fetch(`${BACKEND_URL}/pending-reviews/${id}/resolve`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.detail || `Resolve failed with status ${response.status}`);
+  }
+  return await response.json();
 }
 
 export { CATEGORIES };
