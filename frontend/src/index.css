@@ -1,0 +1,801 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─────────────────────────────────────────────
+   TELEKINESIS — "Index" Minimal Editorial Tokens
+   ───────────────────────────────────────────── */
+
+@theme {
+  /* ── Typography ── */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* ── Arounda InsightOS Light Palette (Alabaster / Subtle Lilac Canvas) ── */
+  --color-canvas: #F4F3F9;
+  --color-canvas-subtle: #ECEBF3;
+  --color-obsidian: #101312;
+  --color-obsidian-subtle: #161A18;
+  --color-obsidian-surface: #1B201E;
+
+  --color-lime: #BAF91A;
+  --color-lime-tint: #E2FF99;
+  --color-lime-hover: #C5FA3B;
+  --color-lime-dark: #8DBF12;
+
+  --color-lavender: #876DFF;
+  --color-lavender-tint: #EDE8FF;
+  --color-lavender-dark: #6B4EE8;
+
+  --color-danger: #FF4D6D;
+  --color-danger-tint: #FFE6EC;
+
+  --color-inset-surface: #F4F3F9;
+  --color-inset-border: #E2E8F0;
+
+  --color-primary: #101312;
+  --color-primary-hover: #1C211F;
+  --color-primary-soft: rgba(16, 19, 18, 0.05);
+
+  --color-text-primary: #101312;
+  --color-text-secondary: #52525B;
+  --color-text-muted: #8E8E93;
+  --color-text-inverse: #FFFFFF;
+
+  --color-pass-bg: #EBFEE5;
+  --color-pass-text: #165319;
+  --color-fail-bg: #FFE6EC;
+  --color-fail-text: #D81138;
+  --color-warn-bg: #FFFBEB;
+  --color-warn-text: #B45309;
+
+  /* ── InsightOS Elevation & Ambient Glow ── */
+  --shadow-lime-glow: 0 12px 36px -8px rgba(186, 249, 26, 0.25);
+  --shadow-obsidian-card: 0 24px 48px -12px rgba(0, 0, 0, 0.5);
+
+  /* ── Radii ── */
+  --radius-cockpit: 1.5rem;    /* 24px - hero cards & cockpit panels */
+  --radius-card: 1.25rem;       /* 20px - rounded-2xl for major cards */
+  --radius-widget: 0.875rem;   /* 14px - rounded-xl for inner widgets */
+  --radius-btn: 0.625rem;      /* 10px - buttons */
+  --radius-pill: 9999px;
+
+  /* ── Transitions ── */
+  --ease-insight: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* ─────────────────────────────────────────────
+   Dark Mode Overrides (Deep Obsidian Charcoal Canvas)
+   ───────────────────────────────────────────── */
+
+.dark {
+  --color-canvas: #0C0D0E;
+  --color-canvas-subtle: #121415;
+
+  --color-inset-surface: #161A18;
+  --color-inset-border: rgba(255, 255, 255, 0.06);
+
+  --color-primary: #BAF91A;
+  --color-primary-hover: #E2FF99;
+  --color-primary-soft: rgba(186, 249, 26, 0.12);
+
+  --color-text-primary: #F4F3F9;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted: #71717A;
+  --color-text-inverse: #101312;
+
+  --color-pass-bg: rgba(186, 249, 26, 0.18);
+  --color-pass-text: #BAF91A;
+  --color-fail-bg: rgba(255, 77, 109, 0.15);
+  --color-fail-text: #FF4D6D;
+  --color-warn-bg: rgba(245, 158, 11, 0.15);
+  --color-warn-text: #FBBF24;
+}
+
+
+/* ─────────────────────────────────────────────
+   Base Styles
+   ───────────────────────────────────────────── */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-canvas);
+  color: var(--color-text-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+
+/* ─────────────────────────────────────────────
+   Precision Hairline & Minimal Editorial Classes
+   ───────────────────────────────────────────── */
+
+
+
+/* ─────────────────────────────────────────────
+   Arounda InsightOS Cockpit Cards & Panels
+   ───────────────────────────────────────────── */
+
+/* Primary Obsidian Glass Card (#101312) */
+.insight-card-obsidian {
+  background-color: #101312;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Obsidian Card with Bottom Lime Ambient Glow */
+.insight-card-hero {
+  background-color: #101312;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.6), 0 16px 40px -10px rgba(186, 249, 26, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Secondary Clean White Card (Transforms to Obsidian in Dark Mode) */
+.insight-card-white {
+  background-color: #FFFFFF;
+  color: #101312;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.dark .insight-card-white {
+  background-color: #101312;
+  color: #F4F3F9;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.4);
+}
+
+/* Pale Lime Card (#E2FF99) for Deal/Breakdown Analytics */
+.insight-card-lime {
+  background-color: #E2FF99;
+  color: #101312;
+  border: 1px solid rgba(186, 249, 26, 0.5);
+  border-radius: 1.25rem;
+  box-shadow: 0 6px 24px -4px rgba(186, 249, 26, 0.2);
+}
+
+/* Inset metric cell inside obsidian hero card */
+.insight-stat-tile {
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.insight-stat-tile:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ─────────────────────────────────────────────
+   Arounda InsightOS Buttons & Interactive Controls
+   ───────────────────────────────────────────── */
+
+/* Electric Lime Primary Action (#BAF91A) */
+.btn-lime {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.125rem;
+  border-radius: 9999px;
+  background-color: #BAF91A;
+  color: #101312;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: -0.01em;
+  border: 1px solid transparent;
+  cursor: pointer;
+  box-shadow: 0 4px 14px 0 rgba(186, 249, 26, 0.35);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-lime:hover {
+  background-color: #C5FA3B;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px 0 rgba(186, 249, 26, 0.45);
+}
+
+.btn-lime:active {
+  transform: translateY(0);
+}
+
+/* Obsidian Action (#101312) */
+.btn-obsidian {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.125rem;
+  border-radius: 9999px;
+  background-color: #101312;
+  color: #FFFFFF;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-obsidian:hover {
+  background-color: #1C211F;
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-0.5px);
+}
+
+/* ─────────────────────────────────────────────
+   Arounda InsightOS Badges & Micro-Pills
+   ───────────────────────────────────────────── */
+
+.pill-pass,
+.pill-fail,
+.pill-warn,
+.pill-lavender,
+.micro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+/* Electric Lime PASS pill */
+.pill-pass {
+  background-color: #BAF91A;
+  color: #101312;
+  border: 1px solid rgba(186, 249, 26, 0.8);
+}
+
+.dark .pill-pass {
+  background-color: rgba(186, 249, 26, 0.18);
+  color: #BAF91A;
+  border: 1px solid rgba(186, 249, 26, 0.4);
+}
+
+/* Danger Alert FAIL pill (#FF4D6D) */
+.pill-fail {
+  background-color: #FFE6EC;
+  color: #FF4D6D;
+  border: 1px solid rgba(255, 77, 109, 0.3);
+}
+
+.dark .pill-fail {
+  background-color: rgba(255, 77, 109, 0.15);
+  color: #FF4D6D;
+  border: 1px solid rgba(255, 77, 109, 0.4);
+}
+
+/* Warning Pill */
+.pill-warn {
+  background-color: #FFFBEB;
+  color: #B45309;
+  border: 1px solid rgba(253, 230, 138, 0.6);
+}
+
+.dark .pill-warn {
+  background-color: rgba(69, 26, 3, 0.3);
+  color: #FBBF24;
+  border: 1px solid rgba(146, 64, 14, 0.4);
+}
+
+/* Digital Lavender Pill (#876DFF) */
+.pill-lavender {
+  background-color: #EDE8FF;
+  color: #876DFF;
+  border: 1px solid rgba(135, 109, 255, 0.3);
+}
+
+.dark .pill-lavender {
+  background-color: rgba(135, 109, 255, 0.18);
+  color: #A38FFF;
+  border: 1px solid rgba(135, 109, 255, 0.4);
+}
+
+/* Command Shortcut Pill (⌘ + Space style in #E2FF99) */
+.pill-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background-color: #E2FF99;
+  color: #101312;
+  font-weight: 700;
+  font-size: 10px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+}
+
+/* Monospace Clean Inline Tags */
+.cli-code-badge {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background-color: rgba(244, 243, 249, 0.9);
+  color: #101312;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  display: inline-block;
+  letter-spacing: -0.015em;
+}
+
+.dark .cli-code-badge {
+  background-color: rgba(22, 26, 24, 0.8);
+  color: #E5E5E5;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+
+/* ─────────────────────────────────────────────
+   Scrollbar Styling
+   ───────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-canvas-subtle);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+
+/* ─────────────────────────────────────────────
+   Animations
+   ───────────────────────────────────────────── */
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out both;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s var(--ease-insight) both;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+
+/* ─────────────────────────────────────────────
+   Defense PDF Report Print Styles
+   ───────────────────────────────────────────── */
+
+#defense-pdf-report {
+  display: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #defense-pdf-report,
+  #defense-pdf-report * {
+    visibility: visible;
+  }
+
+  #defense-pdf-report {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 1.2cm;
+  }
+
+  .no-print,
+  #app-header,
+  #upload-history-drawer,
+  #app-shell > header,
+  #app-shell > main {
+    display: none !important;
+  }
+}
+
+/* Defense Report Layout Structure */
+.defense-report-sheet {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1e293b;
+  background: #ffffff;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.defense-classification-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #991b1b;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.defense-classification-banner.footer {
+  margin-top: 1.5rem;
+  justify-content: center;
+  font-size: 0.6875rem;
+  opacity: 0.9;
+}
+
+.defense-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.25rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.defense-doc-title {
+  font-size: 1.375rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+  margin: 0;
+}
+
+.defense-doc-sub {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.defense-score-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 2px solid;
+}
+
+.defense-score-badge.pass {
+  background: #ecfdf5;
+  border-color: #059669;
+  color: #065f46;
+}
+
+.defense-score-badge.warn {
+  background: #fffbeb;
+  border-color: #d97706;
+  color: #92400e;
+}
+
+.defense-score-badge.fail {
+  background: #fef2f2;
+  border-color: #dc2626;
+  color: #991b1b;
+}
+
+.defense-score-val {
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.defense-score-lbl {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-top: 0.25rem;
+}
+
+.defense-section-box {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.defense-section-title {
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.defense-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.defense-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.defense-meta-item .lbl {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.04em;
+}
+
+.defense-meta-item .val {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.defense-hash-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: #f8fafc;
+  border-top: 1px dashed #cbd5e1;
+  font-size: 0.6875rem;
+}
+
+.defense-hash-row .lbl {
+  font-weight: 700;
+  color: #64748b;
+}
+
+.defense-hash-row .val {
+  color: #334155;
+}
+
+.defense-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.defense-stats-grid .stat-card {
+  padding: 0.75rem;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.defense-stats-grid .stat-card.pass {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.defense-stats-grid .stat-card.fail {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.defense-stats-grid .stat-card.warn {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.defense-stats-grid .stat-num {
+  font-size: 1.375rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.defense-stats-grid .stat-card.pass .stat-num { color: #15803d; }
+.defense-stats-grid .stat-card.fail .stat-num { color: #b91c1c; }
+.defense-stats-grid .stat-card.warn .stat-num { color: #b45309; }
+
+.defense-stats-grid .stat-lbl {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 0.25rem;
+}
+
+.defense-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  font-size: 0.71875rem;
+}
+
+.defense-table th {
+  background: #f8fafc;
+  border-bottom: 2px solid #cbd5e1;
+  border-top: 1px solid #cbd5e1;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  font-size: 0.625rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+}
+
+.defense-table td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+  color: #1e293b;
+}
+
+.defense-table .code-cell {
+  font-size: 0.6875rem;
+  background: #f8fafc;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.defense-table .fail-text {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.defense-table .fix-text {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.defense-table .sub-text {
+  font-size: 0.625rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+  line-height: 1.3;
+}
+
+.sev-tag {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sev-tag.fail {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.sev-tag.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.defense-signoff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1rem 0.75rem;
+  background: #ffffff;
+}
+
+.sign-block {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sign-title {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #334155;
+  text-transform: uppercase;
+}
+
+.sign-line {
+  margin: 2.25rem 0 0.5rem;
+  border-bottom: 1px solid #94a3b8;
+}
+
+.sign-meta {
+  font-size: 0.5625rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.sign-sub {
+  font-size: 0.5625rem;
+  color: #94a3b8;
+  margin-top: 0.15rem;
+}
+
+.sign-status-box {
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.check-box {
+  font-size: 0.875rem;
+}
+
